@@ -31,20 +31,19 @@ class ArticlesContentProvider : ContentProvider() {
         }
     }
 
-    // Для хранения данных в памяти
+    // for storing data locally
     private val articles = mutableListOf<Article>()
     private var lastRemoved : Article? = null
     private var lastRemovedIndex : Int? = null
     private lateinit var file: File
 
     override fun onCreate(): Boolean {
-        // Загрузка данных из файла
+        /* Getting data from file. */
         context?.let { ctx ->
             try {
                 file = File(ctx.filesDir, FILE_NAME)
                 articles.addAll(getArticleListFromFile(file))
                 Log.i("ArticlesContentProvider", "Success loading data from file")
-                Log.i("ArticlesContentProvider", articles[0].toString())
             } catch (e: Exception) {
                 Log.e("ArticlesContentProvider", "Error loading data from file", e)
             }
@@ -61,19 +60,15 @@ class ArticlesContentProvider : ContentProvider() {
     ): Cursor? {
         val cursor = when (uriMatcher.match(uri)) {
             ARTICLES -> {
-                Log.i("ArticlesContentProvider queryARTICLES", "here!")
-                // Преобразуем список в Cursor
+                /* Converting list to Cursor. */
                 val matrixCursor = MatrixCursor(arrayOf(BaseColumns._ID, "cover", "title", "author", "date", "content"))
                 articles.forEach { article ->
                     matrixCursor.addRow(arrayOf(article.id, article.cover, article.title, article.author, getSimpleDateFormat().format(article.date), article.content))
                 }
-                Log.i("ArticlesContentProvider queryARTICLES", matrixCursor.columnNames.toString())
                 matrixCursor
             }
             ARTICLE_ID -> {
-                Log.i("ArticlesContentProvider queryARTICLE_ID", "here!")
                 val articleId = uri.lastPathSegment?.toLongOrNull()
-                Log.i("ArticlesContentProvider queryARTICLE_ID", articleId.toString())
                 if (articleId != null) {
                     val article = articles.find { it.id == articleId }
                     if (article != null) {
@@ -96,7 +91,7 @@ class ArticlesContentProvider : ContentProvider() {
         return when (uriMatcher.match(uri)) {
             ARTICLES -> {
                 val article = Article(
-                    id = System.currentTimeMillis(),  // Просто генерируем id по времени
+                    id = values?.getAsLong("id") ?: System.currentTimeMillis(),
                     cover = values?.getAsInteger("cover"),
                     title = values?.getAsString("title") ?: "",
                     author = values?.getAsString("author") ?: "",
@@ -161,7 +156,7 @@ class ArticlesContentProvider : ContentProvider() {
                 bundle.putBoolean("articleCount", unRemoved)
             }
             else -> {
-                return super.call(method, arg, extras)  // Если метод не определен, вызываем стандартный call
+                return super.call(method, arg, extras)  // Using standard call if method is not found
             }
         }
         return bundle

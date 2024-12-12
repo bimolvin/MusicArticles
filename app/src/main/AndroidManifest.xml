@@ -16,11 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicArticles"
         tools:targetApi="35">
+
         <receiver
             android:name=".notifications.NotificationReceiver"
             android:enabled="true"
             android:exported="false"
-            android:permission="android.permission.POST_NOTIFICATIONS"/>
+            android:permission="android.permission.POST_NOTIFICATIONS" />
 
         <service
             android:name=".notifications.NotificationService"
@@ -37,10 +38,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".articleDetail.ArticleDetailActivity" />
+        <activity android:name=".intentFilters.IntentArticleActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="article"
+                    android:pathPattern="/\\d+"
+                    android:scheme="music-app" />
+            </intent-filter>
+        </activity>
+
         <provider
             android:name=".data.ArticlesContentProvider"
             android:authorities="com.example.art-music"
-            android:exported="false"/>
+            android:exported="false" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

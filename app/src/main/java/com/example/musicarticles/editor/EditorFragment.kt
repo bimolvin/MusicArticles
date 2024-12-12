@@ -11,43 +11,22 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import com.example.musicarticles.FILE_NAME
 import com.example.musicarticles.R
 import com.example.musicarticles.articleDetail.ArticleDetailActivity
 import com.example.musicarticles.articleDetail.ArticleDetailViewModel
-import com.example.musicarticles.articleDetail.ArticleDetailViewModelFactory
-import com.example.musicarticles.articleDetail.CursorArticleDetailViewModel
 import com.example.musicarticles.articleList.ARTICLE_ID
 import com.example.musicarticles.articleList.ArticleListViewModel
-import com.example.musicarticles.articleList.ArticleViewModel
-import com.example.musicarticles.articleList.ArticlesListViewModelFactory
 import com.example.musicarticles.data.Article
 import com.example.musicarticles.data.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
-import java.io.File
 import java.util.Calendar
 
 const val ARTICLE_TO_EDIT_ID = "id"
 
 class EditorFragment : Fragment(), EditorSubmitFragment.OnFragmentSendDataListener {
-    private val articlesListViewModel by viewModels<ArticleListViewModel> {
-        ArticlesListViewModelFactory(File(
-            (activity as AppCompatActivity).filesDir,
-            FILE_NAME
-        ))
-    }
-    private val articleDetailViewModel by viewModels<ArticleDetailViewModel> {
-        ArticleDetailViewModelFactory(
-            File(
-                (activity as AppCompatActivity).filesDir,
-                FILE_NAME
-            )
-        )
-    }
-
-    private val articleListViewModel: ArticleViewModel by viewModels()
-    private val articleViewModel: CursorArticleDetailViewModel by viewModels()
+    private val articleListViewModel: ArticleListViewModel by viewModels()
+    private val articleViewModel: ArticleDetailViewModel by viewModels()
     private lateinit var articleUri: Uri
 
     private var id: Long? = null
@@ -87,7 +66,6 @@ class EditorFragment : Fragment(), EditorSubmitFragment.OnFragmentSendDataListen
             navButton.text = resources.getString(R.string.editor_save)
             articleUri = Uri.parse("content://com.example.art-music/articles/$id")
             article = articleViewModel.fetchArticle(articleUri)
-//            article = articleDetailViewModel.getArticleById(it)
             titleTextField.setText(article?.title)
             contentTextField.setText(article?.content)
         }
@@ -137,10 +115,10 @@ class EditorFragment : Fragment(), EditorSubmitFragment.OnFragmentSendDataListen
         moveBack()
     }
 
-    override fun onDataReceived(data: String?) {
+    override fun onDataReceived(id: Long) {
         moveBack()
 
-        if(addArticle(data) == Activity.RESULT_OK) {
+        if(addArticle(id) == Activity.RESULT_OK) {
             titleTextField.text?.clear()
             contentTextField.text?.clear()
             message(tag = MessageTag.ADD_SUCCESS)
@@ -149,19 +127,14 @@ class EditorFragment : Fragment(), EditorSubmitFragment.OnFragmentSendDataListen
         }
     }
 
-    private fun addArticle(url: String?) : Int {
-        return if (noEmptyFields() && !url.isNullOrEmpty()) {
-//            articlesListViewModel.addArticle(
-//                title = titleTextField.text.toString(),
-//                content = contentTextField.text.toString(),
-//                author = resources.getString(R.string.user_name)
-//            )
+    private fun addArticle(id: Long) : Int {
+        return if (noEmptyFields()) {
             val added = articleListViewModel.addNewArticle(
+                id = id,
                 title = titleTextField.text.toString(),
                 content = contentTextField.text.toString(),
                 author = resources.getString(R.string.user_name)
             )
-
             User.userLastUpdate = Calendar.getInstance().time
 
             if(added) Activity.RESULT_OK else Activity.RESULT_CANCELED
@@ -177,7 +150,6 @@ class EditorFragment : Fragment(), EditorSubmitFragment.OnFragmentSendDataListen
         article?.title = articleTitle
         article?.content = articleContent
         val updated = articleViewModel.updateArticle(article!!)
-//        articleDetailViewModel.editArticle(article!!)
 
         if(updated) {
             val intent = Intent(activity, ArticleDetailActivity()::class.java)
@@ -211,7 +183,6 @@ class EditorFragment : Fragment(), EditorSubmitFragment.OnFragmentSendDataListen
 
     companion object {
         @JvmStatic
-
         fun newInstance(id: String? = null) =
             EditorFragment().apply {
                 arguments = Bundle().apply {

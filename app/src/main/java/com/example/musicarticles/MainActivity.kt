@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             createNotificationChannel()
         }
 
-//        startService(Intent(this, NotificationService::class.java))
+        startService(Intent(this, NotificationService::class.java))
 
 //        createInitialArticles()
 

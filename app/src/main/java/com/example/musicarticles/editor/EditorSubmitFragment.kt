@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.musicarticles.R
 
@@ -36,16 +37,19 @@ class EditorSubmitFragment(fragmentSendDataListener : OnFragmentSendDataListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val id = System.currentTimeMillis()
+        val uri = "articles/$id"
+        view.findViewById<TextView>(R.id.formed_uri).text = uri
         view.findViewById<Button>(R.id.post_article).setOnClickListener {
-            sendData()
+            sendData(id)
         }
         view.findViewById<Button>(R.id.button_back).setOnClickListener {
             back()
         }
     }
 
-    private fun sendData() {
-        sendDataListener?.onDataReceived("string")
+    private fun sendData(id: Long) {
+        sendDataListener?.onDataReceived(id)
     }
 
     private fun back() {
@@ -54,7 +58,7 @@ class EditorSubmitFragment(fragmentSendDataListener : OnFragmentSendDataListener
 
 
     interface OnFragmentSendDataListener {
-        fun onDataReceived(data: String?)
+        fun onDataReceived(id: Long)
         fun onButtonBack()
     }
 }

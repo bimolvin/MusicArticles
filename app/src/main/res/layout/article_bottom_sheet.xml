@@ -46,19 +46,6 @@
             app:iconSize="23dp" />
 
         <Button
-            android:id="@+id/button_change_cover"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/modal_change_cover"
-            android:textColor="@color/md_theme_onSurface"
-            android:textSize="18sp"
-            android:fontFamily="@font/inter"
-            app:icon="@drawable/image"
-            app:iconPadding="10dp"
-            app:iconSize="23dp" />
-
-        <Button
             android:id="@+id/button_delete"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"

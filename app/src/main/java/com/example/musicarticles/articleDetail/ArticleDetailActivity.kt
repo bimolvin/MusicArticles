@@ -1,6 +1,8 @@
 package com.example.musicarticles.articleDetail
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,31 +15,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.example.musicarticles.articleList.ARTICLE_ID
-import com.example.musicarticles.FILE_NAME
 import com.example.musicarticles.MainActivity
 import com.example.musicarticles.R
-import com.example.musicarticles.articleList.ArticleViewModel
+import com.example.musicarticles.articleList.ArticleListViewModel
 import com.example.musicarticles.data.Article
 import com.example.musicarticles.editor.ARTICLE_TO_EDIT_ID
 import com.example.musicarticles.editor.EditorFragment
 import com.example.musicarticles.json.getSimpleDateFormat
 import com.google.android.material.snackbar.Snackbar
-import java.io.File
-
-const val ARTICLE_INDEX = "article index"
 
 /* Displays article chosen from list. */
 class ArticleDetailActivity : AppCompatActivity(), ArticleActionsBottomSheet.DialogListener {
-    private val articleDetailViewModel by viewModels<ArticleDetailViewModel> {
-        ArticleDetailViewModelFactory(
-            File(
-                filesDir,
-                FILE_NAME
-            )
-        )
-    }
-    private val articleListViewModel: ArticleViewModel by viewModels()
-    private val articleViewModel: CursorArticleDetailViewModel by viewModels()
+    private val articleListViewModel: ArticleListViewModel by viewModels()
+    private val articleViewModel: ArticleDetailViewModel by viewModels()
     private lateinit var articleUri: Uri
 
     private lateinit var articleActionsBottomSheet: ArticleActionsBottomSheet
@@ -68,10 +58,10 @@ class ArticleDetailActivity : AppCompatActivity(), ArticleActionsBottomSheet.Dia
         /* If currentArticleId is not null, get corresponding article and set title, image and
         content */
         currentArticleId?.let {
-            // Формируем URI для запроса по id
+            /* Forming URI for request by id. */
             articleUri = Uri.parse("content://com.example.art-music/articles/$currentArticleId")
             val currentArticle = articleViewModel.fetchArticle(articleUri)
-//            val currentArticle = articleDetailViewModel.getArticleById(it)
+
             if(currentArticle != null) {
                 title.text = currentArticle.title
                 author.text = currentArticle.author
@@ -101,8 +91,13 @@ class ArticleDetailActivity : AppCompatActivity(), ArticleActionsBottomSheet.Dia
         }
     }
 
+    /* Copies article URI to clipboard. */
     override fun copyArticleLink(article: Article) {
         Log.i("Detail", "copy link!")
+        val id = article.id
+        (this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager).apply {
+            setPrimaryClip(ClipData.newPlainText("Article Link", "art-music://article/$id"))
+        }
         Snackbar.make(findViewById(R.id.article_detail), R.string.message_copied_link,
             Snackbar.LENGTH_SHORT).show()
         articleActionsBottomSheet.dismiss()
@@ -123,25 +118,13 @@ class ArticleDetailActivity : AppCompatActivity(), ArticleActionsBottomSheet.Dia
         transaction.commit()
     }
 
-    override fun changeArticleCover(article: Article) {
-        Log.i("Detail", "change cover!")
-    }
-
     /* Removes current article from list and redirects to main page. */
     override fun deleteArticle(article: Article) {
         Log.i("Detail", "delete!")
         val intent = Intent(this, MainActivity::class.java)
 
-        /* save list index of article to remove in order to restore it if needed. */
-        val saveIndex = articleDetailViewModel.getArticleIndex(article)
-        if(saveIndex == -1) {
-            this.setResult(Activity.RESULT_CANCELED, intent)
-        } else {
-//            articleDetailViewModel.removeArticle(article)
-            val removed = articleListViewModel.removeArticle(article.id)
-            intent.putExtra(ARTICLE_INDEX, saveIndex)
-            if(removed) this.setResult(Activity.RESULT_OK, intent) else this.setResult(Activity.RESULT_CANCELED, intent)
-        }
+        val removed = articleListViewModel.removeArticle(article.id)
+        if(removed) this.setResult(Activity.RESULT_OK, intent) else this.setResult(Activity.RESULT_CANCELED, intent)
         this.finish()
     }
 }

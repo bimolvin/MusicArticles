@@ -28,7 +28,7 @@
     <string name="next_editor_load_cover">Загрузить изображение</string>
     <string name="next_editor_change_cover">Изменить обложку</string>
     <string name="next_editor_url_label">Сформированный URL</string>
-    <string name="next_editor_url_placeholder">art-music/@</string>
+    <string name="next_editor_url_placeholder">content://com.example.art-music/@</string>
     <string name="next_editor_submit">Опубликовать</string>
 
     <string name="message_add_success">статья успешно добавлена</string>

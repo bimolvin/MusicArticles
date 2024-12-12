@@ -55,73 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:fontFamily="@font/inter"
-                android:gravity="start"
-                android:text="@string/next_editor_cover_label"
-                android:textColor="@color/md_theme_onSurfaceVariant" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardBackgroundColor="@color/md_theme_surfaceContainerLow"
-                app:cardCornerRadius="15dp"
-                app:strokeWidth="0dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fontFamily="@font/inter"
-                        android:gravity="center"
-                        android:text="@string/next_editor_load_cover"
-                        android:textColor="@color/md_theme_onSurface"
-                        android:textSize="14sp" />
-
-                    <Button
-                        android:id="@+id/change_cover"
-                        style="?attr/materialIconButtonFilledTonalStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:alpha="0.85"
-                        android:backgroundTint="@color/md_theme_secondaryContainer"
-                        android:fontFamily="@font/inter"
-                        android:paddingHorizontal="15dp"
-                        android:text="@string/next_editor_change_cover"
-                        android:textColor="@color/md_theme_onSecondaryContainer"
-                        app:icon="@drawable/edit"
-                        app:iconPadding="5dp"
-                        app:iconSize="21dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Button
-                        android:id="@+id/button_delete_image"
-                        style="?attr/materialIconButtonFilledTonalStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:alpha="0.85"
-                        android:backgroundTint="@color/md_theme_secondaryContainer"
-                        android:contentDescription="@string/icon_more"
-                        android:textColor="@color/md_theme_onSecondaryContainer"
-                        app:icon="@drawable/delete"
-                        app:iconSize="21dp"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/inter"
                 android:gravity="start"
                 android:text="@string/next_editor_url_label"
@@ -142,15 +76,15 @@
                 app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/title_text_field"
+                    android:id="@+id/formed_uri"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
+                    android:enabled="false"
                     android:hint="@string/next_editor_url_placeholder"
-                    android:paddingVertical="13dp"
                     android:textColor="@color/md_theme_onSurface"
                     android:textColorHint="@color/md_theme_outline"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/cover"

@@ -40,9 +40,6 @@ class ArticleActionsBottomSheet(listener: DialogListener, private val article: A
                 view?.findViewById<Button>(R.id.button_edit)?.setOnClickListener {
                     mBottomSheetListener?.editArticle(article)
                 }
-                view?.findViewById<Button>(R.id.button_change_cover)?.setOnClickListener {
-                    mBottomSheetListener?.changeArticleCover(article)
-                }
                 view?.findViewById<Button>(R.id.button_delete)?.setOnClickListener {
                     mBottomSheetListener?.deleteArticle(article)
                 }
@@ -67,7 +64,6 @@ class ArticleActionsBottomSheet(listener: DialogListener, private val article: A
     interface DialogListener {
         fun copyArticleLink(article: Article)
         fun editArticle(article: Article)
-        fun changeArticleCover(article: Article)
         fun deleteArticle(article: Article)
     }
 }

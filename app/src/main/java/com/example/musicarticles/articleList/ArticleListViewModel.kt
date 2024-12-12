@@ -1,60 +1,91 @@
 package com.example.musicarticles.articleList
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.musicarticles.data.Article
-import com.example.musicarticles.data.DataSource
-import java.io.File
-import java.util.Calendar
-import kotlin.random.Random
+import android.app.Application
+import android.content.ContentValues
+import android.database.Cursor
+import android.net.Uri
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.musicarticles.data.ArticlesContentProvider
+import kotlinx.coroutines.launch
 
-class ArticleListViewModel(private val dataSource: DataSource) : ViewModel() {
-    val articleLiveData = dataSource.getArticleList()
+class ArticleListViewModel(application: Application) : AndroidViewModel(application) {
 
-    /* Queries datasource to add an article given a formed article. */
-    fun addArticle(article: Article) {
-        dataSource.addArticle(article)
+    private val _articleCursor = MutableLiveData<Cursor?>()
+    val articleCursor: LiveData<Cursor?> = _articleCursor
+
+    private val contentResolver = application.contentResolver
+
+    /* Getting all articles from ContentProvider. */
+    fun fetchArticles() {
+        Log.i("fetchArticles", "here!")
+        viewModelScope.launch {
+            val cursor: Cursor? = contentResolver.query(
+                ArticlesContentProvider.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+            )
+
+            _articleCursor.postValue(cursor)
+        }
     }
-    /* Queries datasource to add an article given a title, a content and the author (user name). */
-    fun addArticle(title: String?, content: String?, author: String) {
+
+    /* Adding new article to ContentProvider given id, title, content and author. */
+    fun addNewArticle(id: Long, title: String?, content: String?, author: String) : Boolean {
         if (title == null || content == null) {
-            return
+            return false
         }
 
-        val newArticle = Article(
-            id = Random.nextLong(),
-            title = title,
-            cover = null,
-            author = author,
-            date = Calendar.getInstance().time,
-            content = content
+        val contentValues = ContentValues().apply {
+            put("id", id)
+            put("title", title)
+            put("author", author)
+            put("content", content)
+        }
+
+        val newArticleUri: Uri? = contentResolver.insert(
+            ArticlesContentProvider.CONTENT_URI, // provider URI
+            contentValues  // new data
         )
-        dataSource.addArticle(newArticle)
+
+        return newArticleUri != null
     }
 
-    /* Queries datasource to remove an article that corresponds to an id. */
-    fun removeArticle(articleId: Long) {
-        val article = dataSource.getArticleById(articleId)
-        if(article != null) {
-            dataSource.removeArticle(article)
+    /* Removing article from ContentProvider given article id. */
+    fun removeArticle(articleId: Long) : Boolean {
+        val articleUri = Uri.withAppendedPath(
+            ArticlesContentProvider.CONTENT_URI,
+            articleId.toString() // URI of article to delete
+        )
+
+        val rowsDeleted = contentResolver.delete(
+            articleUri,
+            null,
+            null
+        )
+
+        return rowsDeleted > 0
+    }
+
+    /* UNDO of removing article. */
+    fun unRemoveArticle(){
+        // Defining URI for calling custom function
+        val uri = Uri.parse("content://com.example.art-music/articles")
+
+        val result = contentResolver.call(uri, "unRemoveArticle", null, null)
+
+        if(!result?.getString("articleCount").toBoolean()) {
+            Log.e("unRemoveArticle", "Error, the article is not unRemoved")
         }
     }
 
-    /* Queries datasource to cancel removing an article and insert it at the given position. */
-    fun unRemoveArticle(index: Int) {
-        dataSource.unRemoveArticle(index)
-    }
-}
-
-class ArticlesListViewModelFactory(private val file: File) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ArticleListViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ArticleListViewModel(
-                dataSource = DataSource.getDataSource(file)
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+    /* Closing cursor if not needed anymore. */
+    fun closeCursor() {
+        _articleCursor.value?.close()
     }
 }

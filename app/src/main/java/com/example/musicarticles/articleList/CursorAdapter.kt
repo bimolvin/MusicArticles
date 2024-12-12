@@ -3,7 +3,6 @@ package com.example.musicarticles.articleList
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,10 +34,10 @@ class CursorAdapter(
 
     /* ViewHolder for a single list element. */
     inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.findViewById(R.id.title)
-        val author: TextView = itemView.findViewById(R.id.author)
-        val date: TextView = itemView.findViewById(R.id.publish_date)
-        val cover: ImageView = itemView.findViewById(R.id.cover)
+        private val title: TextView = itemView.findViewById(R.id.title)
+        private val author: TextView = itemView.findViewById(R.id.author)
+        private val date: TextView = itemView.findViewById(R.id.publish_date)
+        private val cover: ImageView = itemView.findViewById(R.id.cover)
 
         fun bind(curr: Cursor) {
             title.text = curr.getString(curr.getColumnIndexOrThrow("title"))
