@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/standard_bottom_sheet"
+        style="@style/Widget.Material3.BottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start"
+        android:orientation="vertical"
+        android:paddingHorizontal="30dp"
+        android:paddingBottom="20dp">
+
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/button_copy_link"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modal_copy"
+            android:textColor="@color/md_theme_onSurface"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter"
+            app:icon="@drawable/link"
+            app:iconPadding="10dp"
+            app:iconSize="25dp" />
+
+        <Button
+            android:id="@+id/button_edit"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modal_edit"
+            android:textColor="@color/md_theme_onSurface"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter"
+            app:icon="@drawable/edit"
+            app:iconPadding="10dp"
+            app:iconSize="23dp" />
+
+        <Button
+            android:id="@+id/button_change_cover"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modal_change_cover"
+            android:textColor="@color/md_theme_onSurface"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter"
+            app:icon="@drawable/image"
+            app:iconPadding="10dp"
+            app:iconSize="23dp" />
+
+        <Button
+            android:id="@+id/button_delete"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modal_delete"
+            android:textColor="@color/md_theme_error"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter"
+            app:icon="@drawable/delete"
+            app:iconPadding="10dp"
+            app:iconTint="@color/md_theme_error"
+            app:iconSize="23dp" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
